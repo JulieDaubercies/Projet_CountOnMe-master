@@ -1,32 +1,31 @@
 //
-//  SimpleCalcTests.swift
-//  SimpleCalcTests
+//  CountOnMeTests.swift
+//  CountOnMeTests
 //
-//  Created by Vincent Saluzzo on 29/03/2019.
-//  Copyright © 2019 Vincent Saluzzo. All rights reserved.
+//  Created by DAUBERCIES on 10/05/2021.
+//  Copyright © 2021 Vincent Saluzzo. All rights reserved.
 //
 
 import XCTest
-@testable import SimpleCalc
 
-class SimpleCalcTests: XCTestCase {
+class CountOnMeTests: XCTestCase {
 
-    override func setUp() {
+    override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
+    func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testPerformanceExample() {
+    func testPerformanceExample() throws {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }
