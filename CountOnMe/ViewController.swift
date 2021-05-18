@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ViewController: UIViewController {
     
     // MARK: - Properties
@@ -15,25 +16,19 @@ class ViewController: UIViewController {
     @IBOutlet var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     @IBOutlet var signForCalcul: [UIButton]!
-    
-    var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
-    }
-    // Last expression can't be an operator
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-"
-    }
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
-    var expressionHaveResult: Bool {
-        return textView.text.firstIndex(of: "=") != nil
-    }
+    var calculate = Calculate()
     
     // MARK: - Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        calculate.displayHandlerDelegate = self
+    }
+    
+    /// Action button AC
+    @IBAction func cancel(_ sender: UIButton) {
+        textView.text = ""
+        calculate.number = ""
     }
     
     /// Actions to tap on numbers
@@ -41,72 +36,38 @@ class ViewController: UIViewController {
         guard let numberText = sender.title(for: .normal) else {
             return
         }
-        if expressionHaveResult {
-          //  print(textView.text!)
-            textView.text = ""
-        }
-        textView.text.append(numberText)
+        calculate.tappedNumberButton(numberText: numberText)
     }
     
     /// Actions to choose an operator
     @IBAction func calculatedButtons(_ sender: UIButton) {
-        if expressionHaveResult {
-            textView.text = ("\(elements.last ?? "")")
+        // rajouter
+        //    if canAddOperator {
+        //        textView.text.append(" + ")
+        //    } else {
+        guard let SymbolText = sender.title(for: .normal) else {
+            return
         }
-        for sign in signForCalcul {
-            if elements.last == sign.currentTitle {
-                for _ in 0..<3 {
-                    textView.text.removeLast()
-                }
-            }
-        }
-        for _ in 0..<1 {
-            let calculSign = sender.currentTitle
-            textView.text.append(" \(calculSign ?? "") ")
-        }
+        calculate.operatorButtons(symbolText: SymbolText)
     }
     
     /// Action to launch the calcul
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        guard expressionIsCorrect else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
-        }
-        guard expressionHaveEnoughElement else {
-            let alertVC = UIAlertController(title: "Zéro!", message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            return self.present(alertVC, animated: true, completion: nil)
-        }
-        
-        if expressionHaveResult {
-            textView.text = ("\(elements.last ?? "")")
-        } else {
-        // Create local copy of operations
-        var numberToCalculate = elements
-        // Iterate over operations while an operand still here
-            while numberToCalculate.count > 1 {
-                let left = Int(numberToCalculate[0])!
-                print(left)
-                let operand = numberToCalculate[1]
-                print(operand)
-                let right = Int(numberToCalculate[2])!
-                print(right)
-                let result: Int
-                switch operand {
-                case "+": result = left + right
-                case "-": result = left - right
-                case "/": result = left / right
-                case "*": result = left * right
-                default: fatalError("Unknown operator !")
-                }
-                print(result)
-                // après le calcul des deux premiers chiffres ceux-ci sont supprimés du tableau
-                numberToCalculate = Array(numberToCalculate.dropFirst(3))
-                numberToCalculate.insert("\(result)", at: 0)
-            }
-            textView.text.append(" = \(numberToCalculate.first!)")
-         //   print("\(numberToCalculate.first!)")
+        calculate.calcul()
     }
+}
+
+// MARK: - Delegate Pattern
+
+extension ViewController : DisplayHandler {
+    /// Update of the view
+    func upDateCalcul(calcul: String) {
+        textView.text = calcul
+    }
+    /// Alert message when error on display
+    func showAlert(message: String) {
+        let alertVC = UIAlertController(title: "Attention!", message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        return self.present(alertVC, animated: true, completion: nil)
     }
 }
