@@ -8,29 +8,33 @@
 
 import UIKit
 
-
 class ViewController: UIViewController {
-    
     // MARK: - Properties
-    
     @IBOutlet var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     @IBOutlet var signForCalcul: [UIButton]!
+    @IBOutlet weak var cancelButton: UIButton!
     var calculate = Calculate()
+    var tapGesture: UITapGestureRecognizer?
+    var longTapGesture: UILongPressGestureRecognizer?
     
     // MARK: - Methods
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         calculate.displayHandlerDelegate = self
+        longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(cancelAll(_:)))
+        cancelButton.addGestureRecognizer(longTapGesture!)
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelEntry(_:)))
+        cancelButton.addGestureRecognizer(tapGesture!)
     }
-    
-    /// Action button AC
-    @IBAction func cancel(_ sender: UIButton) {
-        textView.text = ""
-        calculate.number = ""
+    /// Cancel the last entry
+    @IBAction func cancelEntry(_ sender: Any) {
+        calculate.cancelEntry()
     }
-    
+    /// Cancel all the entry
+    @IBAction func cancelAll(_ sender: Any) {
+        calculate.cancelAllEntry()
+    }
     /// Actions to tap on numbers
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {
@@ -38,28 +42,22 @@ class ViewController: UIViewController {
         }
         calculate.tappedNumberButton(numberText: numberText)
     }
-    
     /// Actions to choose an operator
     @IBAction func calculatedButtons(_ sender: UIButton) {
-        // rajouter
-        //    if canAddOperator {
-        //        textView.text.append(" + ")
-        //    } else {
-        guard let SymbolText = sender.title(for: .normal) else {
+        guard let symbolText = sender.title(for: .normal) else {
             return
         }
-        calculate.operatorButtons(symbolText: SymbolText)
+        calculate.TappedOperatorButtons(symbolText: symbolText)
     }
-    
     /// Action to launch the calcul
-    @IBAction func tappedEqualButton(_ sender: UIButton) {
-        calculate.calcul()
+     @IBAction func tappedEqualButton(_ sender: UIButton) {
+        calculate.makeTheCalcul()
     }
 }
 
 // MARK: - Delegate Pattern
 
-extension ViewController : DisplayHandler {
+extension ViewController: DisplayHandler {
     /// Update of the view
     func upDateCalcul(calcul: String) {
         textView.text = calcul

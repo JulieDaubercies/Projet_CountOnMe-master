@@ -8,7 +8,7 @@
 
 import Foundation
 
-//    MARK: - Protocol between model and controller
+// MARK: - Protocol between model and controller
 
 protocol DisplayHandler {
     func upDateCalcul(calcul: String)
@@ -17,27 +17,53 @@ protocol DisplayHandler {
 
 class Calculate {
     
-    //    MARK: - Properties
+    // MARK: - Properties
     
     var number = "" {
         didSet {
             displayHandlerDelegate?.upDateCalcul(calcul: number)
         }
     }
-    var elements: [String] { return number.split(separator: " ").map { "\($0)" } }
-    var expressionIsCorrect: Bool { return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "*"}
-    var expressionHaveEnoughElement: Bool { return elements.count >= 3 }
-    var expressionHaveResult: Bool { return number.firstIndex(of: "=") != nil }
-    var canAddOperator: Bool { return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "*" }
-    var expressionBeginByMinus: Bool { return elements.first == "-" }
-    var expressionBeginByOtherOperator: Bool { return elements.first == "*" || elements.first == "/" || elements.first == "+"}
+    var  displayHandlerDelegate: DisplayHandler?
+    private var elements: [String] {
+        return number.split(separator: " ").map { "\($0)" }
+    }
+    private var expressionIsCorrect: Bool {
+        return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "*"
+    }
+    private var expressionHaveEnoughElement: Bool {
+        return elements.count >= 3
+    }
+    private var expressionHaveResult: Bool {
+        return number.firstIndex(of: "=") != nil
+    }
+    private var canAddOperator: Bool {
+        return elements.last != "+" && elements.last != "-" && elements.last != "/" && elements.last != "*"
+    }
+    private var expressionBeginByMinus: Bool {
+        return elements.first == "-"
+    }
+    private var expressionBeginByOtherOperator: Bool {
+        return elements.first == "*" || elements.first == "/" || elements.first == "+"
+    }
     //  lazy var numberToCalculate =  elements
-    lazy var numberToCalculate: [String] = { elements } ()
-    var displayHandlerDelegate: DisplayHandler?
-    var symbol = ""
+    private lazy var numberToCalculate: [String] = { elements }()
+    private var symbol = ""
     
-    //    MARK: - Methods
-    
+    // MARK: - Methods
+    /// Manage TapGesture : cancel last entry
+    func cancelEntry() {
+        if number != "" {
+            if number.last == " " {
+                number.removeLast()
+            }
+            number.removeLast()
+        }
+    }
+    /// Manage LongTapGesture : cancel all the entry
+    func cancelAllEntry() {
+        number = ""
+    }
     /// Manage number button
     func tappedNumberButton(numberText: String) {
         if expressionHaveResult || expressionBeginByOtherOperator {
@@ -50,9 +76,8 @@ class Calculate {
             number.append(numberText)
         }
     }
-    
     /// Manage operator button
-    func operatorButtons(symbolText: String) {
+    func TappedOperatorButtons(symbolText: String) {
         if expressionHaveResult {
             number = ("\(elements.last ?? "")")
         }
@@ -65,24 +90,22 @@ class Calculate {
             number.append(" \(symbolText) ")
         }
     }
-    
     /// Control of the priority mathematical symbol
-    func controlPrioritySymbol() {
+    private func controlPrioritySymbol() {
         if numberToCalculate.contains("/") {
             symbol = "/"
-        } else  if numberToCalculate.contains("*"){
+        } else  if numberToCalculate.contains("*") {
             symbol = "*"
-        } else  if numberToCalculate.contains("+"){
+        } else  if numberToCalculate.contains("+") {
             symbol = "+"
             firstOperand()
-        } else  if numberToCalculate.contains("-"){
+        } else  if numberToCalculate.contains("-") {
             symbol = "-"
             firstOperand()
         }
     }
-    
     /// Control way of calcul whit only + and -
-    func firstOperand() {
+    private func firstOperand() {
         if numberToCalculate.contains("+") && numberToCalculate.contains("-") {
             if numberToCalculate.firstIndex(of: "+")! < numberToCalculate.firstIndex(of: "-")! {
                 symbol = "+"
@@ -91,9 +114,8 @@ class Calculate {
             }
         }
     }
-    
-    /// Calcul of the display screen
-    func calcul() {
+    /// Control display screen before calcul
+    func makeTheCalcul() {
         guard expressionIsCorrect else {
             displayHandlerDelegate?.showAlert(message: "Entrez une expression correcte !")
             return
@@ -106,18 +128,16 @@ class Calculate {
             number = ("\(elements.last ?? "")")
         } else {
             numberToCalculate = elements
-            for _ in numberToCalculate {
-                controlPrioritySymbol()
-                while let index = numberToCalculate.firstIndex(of: symbol) {
-                    var resultat = 0.0
+            controlPrioritySymbol()
+            while let index = numberToCalculate.firstIndex(of: symbol) {
+                var resultat = 0.0
+                if  symbol == "/" && Int(numberToCalculate[index + 1]) == 0 {
+                    displayHandlerDelegate?.showAlert(message: "Division par 0 impossible !")
+                    numberToCalculate = [""]
+                } else {
                     switch symbol {
                     case "*": resultat = Double(numberToCalculate[index - 1])! * Double(numberToCalculate[index + 1])!
-                    case "/":
-                        if Int(numberToCalculate[index + 1]) == 0 {
-                            displayHandlerDelegate?.showAlert(message: "Division par 0 impossible !")
-                        } else {
-                            resultat = Double(numberToCalculate[index - 1])! / Double(numberToCalculate[index + 1])!
-                        }
+                    case "/": resultat = Double(numberToCalculate[index - 1])! / Double(numberToCalculate[index + 1])!
                     case "+": resultat = Double(numberToCalculate[index - 1])! + Double(numberToCalculate[index + 1])!
                     case "-": resultat = Double(numberToCalculate[index - 1])! - Double(numberToCalculate[index + 1])!
                     default: break
@@ -131,6 +151,5 @@ class Calculate {
             }
             number = ("\(number) =  \(numberToCalculate[0])")
         }
-        
     }
 }

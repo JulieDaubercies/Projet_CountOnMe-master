@@ -154,7 +154,8 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="cancel:" destination="eqK-jh-KKu" eventType="touchUpInside" id="3Bz-nL-Ub9"/>
+                                                    <action selector="cancelAll:" destination="eqK-jh-KKu" eventType="touchUpInside" id="3Bz-nL-Ub9"/>
+                                                    <action selector="cancelEntry:" destination="eqK-jh-KKu" eventType="touchUpInside" id="hV4-nm-SZA"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -245,6 +246,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="cancelButton" destination="ywU-K1-KkZ" id="BeD-mN-Zt5"/>
                         <outlet property="textView" destination="T2H-yn-nBB" id="mTp-ie-547"/>
                         <outletCollection property="numberButtons" destination="YD6-ul-r3f" collectionClass="NSMutableArray" id="c8W-uL-ZHg"/>
                         <outletCollection property="numberButtons" destination="Raa-av-x4n" collectionClass="NSMutableArray" id="P52-Zx-bMS"/>

@@ -16,6 +16,20 @@
 		3728679C2649569E00086EBB /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3728679B2649569E00086EBB /* Calculator.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+		371CD4C32656561E00415D31 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = file.rcproject;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# rctool\n";
+		};
+/* End PBXBuildRule section */
+
 /* Begin PBXContainerItemProxy section */
 		372867942649236600086EBB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -82,9 +96,6 @@
 				371FCEA426447D54005185AB /* Model */,
 				371FCEA326447D4B005185AB /* Controller */,
 				371FCEA226447D42005185AB /* View */,
-				1FA43BD6224E569900F565CB /* Main.storyboard */,
-				3728679B2649569E00086EBB /* Calculator.swift */,
-				1FA43BD4224E569900F565CB /* ViewController.swift */,
 				1FA43BD9224E569A00F565CB /* Assets.xcassets */,
 				1FA43BD2224E569900F565CB /* AppDelegate.swift */,
 				1FA43BDB224E569A00F565CB /* LaunchScreen.storyboard */,
@@ -96,6 +107,7 @@
 		371FCEA226447D42005185AB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1FA43BD6224E569900F565CB /* Main.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -103,6 +115,7 @@
 		371FCEA326447D4B005185AB /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				1FA43BD4224E569900F565CB /* ViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -110,6 +123,7 @@
 		371FCEA426447D54005185AB /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3728679B2649569E00086EBB /* Calculator.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -152,6 +166,7 @@
 				3728678D2649236600086EBB /* Resources */,
 			);
 			buildRules = (
+				371CD4C32656561E00415D31 /* PBXBuildRule */,
 			);
 			dependencies = (
 				372867952649236600086EBB /* PBXTargetDependency */,
@@ -168,7 +183,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Vincent Saluzzo";
 				TargetAttributes = {
 					1FA43BCE224E569900F565CB = {
@@ -294,6 +309,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -355,6 +371,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
