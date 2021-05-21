@@ -10,22 +10,23 @@ import Foundation
 
 // MARK: - Protocol between model and controller
 
-protocol DisplayHandler {
+protocol DisplayHandler: AnyObject {
     func upDateCalcul(calcul: String)
     func showAlert(message: String)
 }
 
-class Calculate {
-    
+class Calculator {
+
     // MARK: - Properties
-    
+
+    var calcul = Calcul()
     var number = "" {
         didSet {
             displayHandlerDelegate?.upDateCalcul(calcul: number)
         }
     }
-    var  displayHandlerDelegate: DisplayHandler?
-    private var elements: [String] {
+    weak var  displayHandlerDelegate: DisplayHandler?
+    var elements: [String] {
         return number.split(separator: " ").map { "\($0)" }
     }
     private var expressionIsCorrect: Bool {
@@ -46,11 +47,9 @@ class Calculate {
     private var expressionBeginByOtherOperator: Bool {
         return elements.first == "*" || elements.first == "/" || elements.first == "+"
     }
-    //  lazy var numberToCalculate =  elements
-    private lazy var numberToCalculate: [String] = { elements }()
-    private var symbol = ""
-    
+
     // MARK: - Methods
+
     /// Manage TapGesture : cancel last entry
     func cancelEntry() {
         if number != "" {
@@ -77,7 +76,7 @@ class Calculate {
         }
     }
     /// Manage operator button
-    func TappedOperatorButtons(symbolText: String) {
+    func tappedOperatorButtons(symbolText: String) {
         if expressionHaveResult {
             number = ("\(elements.last ?? "")")
         }
@@ -90,32 +89,8 @@ class Calculate {
             number.append(" \(symbolText) ")
         }
     }
-    /// Control of the priority mathematical symbol
-    private func controlPrioritySymbol() {
-        if numberToCalculate.contains("/") {
-            symbol = "/"
-        } else  if numberToCalculate.contains("*") {
-            symbol = "*"
-        } else  if numberToCalculate.contains("+") {
-            symbol = "+"
-            firstOperand()
-        } else  if numberToCalculate.contains("-") {
-            symbol = "-"
-            firstOperand()
-        }
-    }
-    /// Control way of calcul whit only + and -
-    private func firstOperand() {
-        if numberToCalculate.contains("+") && numberToCalculate.contains("-") {
-            if numberToCalculate.firstIndex(of: "+")! < numberToCalculate.firstIndex(of: "-")! {
-                symbol = "+"
-            } else {
-                symbol = "-"
-            }
-        }
-    }
-    /// Control display screen before calcul
-    func makeTheCalcul() {
+    /// Manage equal button
+    func giveTheResult() {
         guard expressionIsCorrect else {
             displayHandlerDelegate?.showAlert(message: "Entrez une expression correcte !")
             return
@@ -127,29 +102,13 @@ class Calculate {
         if expressionHaveResult {
             number = ("\(elements.last ?? "")")
         } else {
-            numberToCalculate = elements
-            controlPrioritySymbol()
-            while let index = numberToCalculate.firstIndex(of: symbol) {
-                var resultat = 0.0
-                if  symbol == "/" && Int(numberToCalculate[index + 1]) == 0 {
-                    displayHandlerDelegate?.showAlert(message: "Division par 0 impossible !")
-                    numberToCalculate = [""]
-                } else {
-                    switch symbol {
-                    case "*": resultat = Double(numberToCalculate[index - 1])! * Double(numberToCalculate[index + 1])!
-                    case "/": resultat = Double(numberToCalculate[index - 1])! / Double(numberToCalculate[index + 1])!
-                    case "+": resultat = Double(numberToCalculate[index - 1])! + Double(numberToCalculate[index + 1])!
-                    case "-": resultat = Double(numberToCalculate[index - 1])! - Double(numberToCalculate[index + 1])!
-                    default: break
-                    }
-                    numberToCalculate.insert(("\(resultat)"), at: index - 1)
-                    for _ in 0..<3 {
-                        numberToCalculate.remove(at: index)
-                    }
-                    controlPrioritySymbol()
-                }
+            calcul.numberToCalculate = elements
+            calcul.makeTheCalcul()
+            if calcul.numberToCalculate == ["error"] {
+                displayHandlerDelegate?.showAlert(message: "Division par 0 impossible !")
+            } else {
+                number = ("\(number) =  \(calcul.numberToCalculate[0])")
             }
-            number = ("\(number) =  \(numberToCalculate[0])")
         }
     }
 }

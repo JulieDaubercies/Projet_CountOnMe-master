@@ -9,16 +9,19 @@
 import UIKit
 
 class ViewController: UIViewController {
+
     // MARK: - Properties
+
     @IBOutlet var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     @IBOutlet var signForCalcul: [UIButton]!
     @IBOutlet weak var cancelButton: UIButton!
-    var calculate = Calculate()
+    var calculate = Calculator()
     var tapGesture: UITapGestureRecognizer?
     var longTapGesture: UILongPressGestureRecognizer?
-    
+
     // MARK: - Methods
+
     override func viewDidLoad() {
         super.viewDidLoad()
         calculate.displayHandlerDelegate = self
@@ -47,11 +50,11 @@ class ViewController: UIViewController {
         guard let symbolText = sender.title(for: .normal) else {
             return
         }
-        calculate.TappedOperatorButtons(symbolText: symbolText)
+        calculate.tappedOperatorButtons(symbolText: symbolText)
     }
     /// Action to launch the calcul
      @IBAction func tappedEqualButton(_ sender: UIButton) {
-        calculate.makeTheCalcul()
+        calculate.giveTheResult()
     }
 }
 
